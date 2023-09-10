@@ -1,0 +1,392 @@
+--Variables
+getgenv().Username = nil 
+getgenv().PickedItemShop = nil
+getgenv().PlayersUserInServer = nil
+local Players = game:GetService("Players"):GetChildren()
+local ShopItems = game:GetService("Workspace").Ignored.Shop:GetChildren()
+local PlayersTable = {}
+local ShopTable = {}
+for i,v in pairs(ShopItems) do 
+    table.insert(ShopTable, v.Name)
+end
+for i,v in pairs(Players) do 
+      table.insert(PlayersTable, v.Name)
+end
+local function Notify_Healing()
+    game.StarterGui:SetCore("SendNotification",  {
+        Title = "Healing Notify";
+        Text = "Click This Everytime You Die";
+        Icon = "";
+        Duration = 6.5;
+    }) 
+end
+local function Equip_Food()
+    for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do 
+        if v.Name == "[Chicken]" then 
+        game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+        end
+    end
+end
+local function Get_Revolver()
+    for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do 
+        if v.Name == "[Revolver]" then 
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            break
+        end
+    end
+end
+local function Get_PlayerTargettedTP()
+    for i,v in pairs(game:GetService("Workspace").Players:GetChildren()) do 
+        if v.Name == getgenv().Username then 
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.BodyEffects.SpecialParts.UpperTorso.CFrame
+        wait()
+        end
+    end
+end
+local function Get_Stomp()
+function getNil(name,class) for _,v in pairs(getnilinstances())do if v.ClassName==class and v.Name==name then return v;end end end
+    local args = {
+        [1] = "Stomp",
+        [2] = {
+            ["AddComma"] = function()end --[[AddComma]],
+            ["Activate"] = function()end --[[Activate]],
+            ["IsMobile"] = function()end --[[IsMobile]],
+            ["CheckTeam"] = function()end --[[CheckTeam]],
+            ["DecodeFurnitureData"] = function()end --[[DecodeFurnitureData]],
+            ["GetMyHouseMaxLimit"] = function()end --[[GetMyHouseMaxLimit]],
+            ["GroupImage"] = function()end --[[GroupImage]],
+            ["GetMyHouseLimit"] = function()end --[[GetMyHouseLimit]],
+            ["Block"] = function()end --[[Block]],
+            ["GetTime"] = function()end --[[GetTime]],
+            ["Splashed"] = function()end --[[Splashed]],
+            ["GetHouseItemCFrame"] = function()end --[[GetHouseItemCFrame]],
+            ["holdingGun"] = function()end --[[holdingGun]],
+            ["GunHold"] = function()end --[[GunHold]],
+            ["CheckInCrew"] = function()end --[[CheckInCrew]],
+            ["MovementChange"] = function()end --[[MovementChange]],
+            ["CheckTotalLimit"] = function()end --[[CheckTotalLimit]],
+            ["GetFurniturePosLocation"] = function()end --[[GetFurniturePosLocation]],
+            ["Ignored"] = {
+                [1] = workspace.Ignored
+            }
+        },
+        [3] = getNil("Stomp", "AnimationTrack"),
+        [4] = game:GetService("Players").LocalPlayer.Character.BodyEffects
+    }
+    game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
+end
+--Library
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+    Name = "Novia Hub | Da Hood",
+    LoadingTitle = "Made By Karma",
+    LoadingSubtitle = "by Kai",
+    ConfigurationSaving = {
+       Enabled = false,
+       FolderName = nil, -- Create a custom folder for your hub/game
+       FileName = "Novia Hub"
+    },
+    Discord = {
+       Enabled = true,
+       Invite = "https://discord.gg/noviahub", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+    },
+    KeySystem = true, -- Set this to true to use our key system
+    KeySettings = {
+       Title = "Key System",
+       Subtitle = "Key System",
+       Note = "Enter Key!",
+       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+       SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+       GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+       Key = {"https://pastebin.com/raw/buRTxvzx"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+    }
+})
+--AutoBuyTab
+local AutoBuyTab = Window:CreateTab("AutoBuyTab", 4483362458)
+local AutoBuySection = AutoBuyTab:CreateSection("AutoBuySection")
+local Dropdown = AutoBuyTab:CreateDropdown({
+    Name = "Shop Items",
+    Options = ShopTable,
+    CurrentOption = {"Option 1"},
+    MultipleOptions = false,
+    Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(ShopItem)
+        getgenv().PickedItemShop = ShopItem[1]
+    end,
+ })
+local Button = AutoBuyTab:CreateButton({
+    Name = "Buy Item",
+    Callback = function()
+        local OldCFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        wait(0.1)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Ignored.Shop[getgenv().PickedItemShop].Head.CFrame
+        wait(0.3)
+        fireclickdetector(game:GetService("Workspace").Ignored.Shop[getgenv().PickedItemShop].ClickDetector)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
+    end,
+})
+--ToggleTab
+local ToggleTab = Window:CreateTab("ToggleTab", 4483362458)
+local ToggleSection = ToggleTab:CreateSection("ToggleSection")
+local Toggle = ToggleTab:CreateToggle({
+    Name = "Auto Stomp",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        getgenv().AutoStomp = Value 
+        while true do 
+            if not getgenv().AutoStomp then return end 
+                Get_Stomp()
+            wait()
+        end
+    end,
+ })
+local Toggle = ToggleTab:CreateToggle({
+    Name = "No Slowdown",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        getgenv().NoSlowDown = Value 
+        while true do 
+            if not getgenv().NoSlowDown then return end 
+                game.Players.LocalPlayer.Character.BodyEffects.Movement:ClearAllChildren()
+            wait()
+        end
+    end,
+})
+local Toggle = ToggleTab:CreateToggle({
+    Name = "Auto Armor",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        getgenv().AutoArmor = Value 
+        while true do 
+            if getgenv().AutoArmor == false then return end 
+                local OldCFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                wait(0.001)
+                local Armor = game:GetService("Players").LocalPlayer.DataFolder.Information.ArmorSave
+                if Armor.Value < 140 then 
+                repeat 
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Ignored.Shop["[High Armor] - $3200"].Head.CFrame
+                wait(0.001)
+                fireclickdetector(game:GetService("Workspace").Ignored.Shop["[High Armor] - $3200"].ClickDetector)
+                wait(0.001)
+                until Armor.Value == 200 
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
+            end
+        end
+    end,
+})
+local Toggle = ToggleTab:CreateToggle({
+    Name = "Auto Heal",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        getgenv().AutoHeal = Value 
+        while true do 
+                local OldCFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            if not getgenv().AutoHeal then return end 
+            wait()
+                if getgenv().healthValue < 40 then 
+                    repeat
+                        wait(0.1)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Ignored.Shop:GetChildren()[107].Head.CFrame
+                        wait(0.3)
+                        fireclickdetector(workspace.Ignored.Shop:GetChildren()[107].ClickDetector);
+                        wait(0.1)
+                        Equip_Food()
+                        wait(0.1)
+                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
+                    until getgenv().healthValue == 100
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldCFrame
+            end
+        end
+    end,
+})
+local Button = ToggleTab:CreateButton({
+    Name = "Click This To Make The Auto Heal Work",
+    Callback = function()
+        Notify_Healing()
+        while true do 
+            getgenv().healthValue = (workspace.Players.DahAimTrainerHacer.Humanoid.Health)
+            wait()
+        end
+    end,
+ })
+--PlayerTab
+local PlayerTab = Window:CreateTab("PlayerTab", 4483362458)
+local PlayerSection = PlayerTab:CreateSection("PlayerSection")
+local Button = PlayerTab:CreateButton({
+    Name = "CFrame WalkSpeed (X)",
+    Callback = function()
+        repeat
+            wait()
+        until game:IsLoaded()
+        local L_134_ = game:service('Players')
+        local L_135_ = L_134_.LocalPlayer
+        repeat
+            wait()
+        until L_135_.Character
+        local L_136_ = game:service('UserInputService')
+        local L_137_ = game:service('RunService')
+        getgenv().Multiplier = 0.5
+        local L_138_ = true
+        local L_139_
+        L_136_.InputBegan:connect(function(L_140_arg0)
+            if L_140_arg0.KeyCode == Enum.KeyCode.LeftBracket then
+                Multiplier = Multiplier + 0.01
+                print(Multiplier)
+                wait(0.2)
+                while L_136_:IsKeyDown(Enum.KeyCode.LeftBracket) do
+                    wait()
+                    Multiplier = Multiplier + 0.01
+                    print(Multiplier)
+                end
+            end
+            if L_140_arg0.KeyCode == Enum.KeyCode.RightBracket then
+                Multiplier = Multiplier - 0.01
+                print(Multiplier)
+                wait(0.2)
+                while L_136_:IsKeyDown(Enum.KeyCode.RightBracket) do
+                    wait()
+                    Multiplier = Multiplier - 0.01
+                    print(Multiplier)
+                end
+            end
+            if L_140_arg0.KeyCode == Enum.KeyCode.X then
+                L_138_ = not L_138_
+                if L_138_ == true then
+                    repeat
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.Humanoid.MoveDirection * Multiplier
+                        game:GetService("RunService").Stepped:wait()
+                    until L_138_ == false
+                end
+            end
+        end)
+    end,
+ })
+local Slider = PlayerTab:CreateSlider({
+    Name = "CFrame Speed",
+    Range = {0, 5},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 1,
+    Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        getgenv().Multiplier = Value
+    end,
+})
+--TargetTab
+local TargetTab = Window:CreateTab("TargetTab", 4483362458)
+local TargetSection = TargetTab:CreateSection("TargetSection")
+local Dropdown = TargetTab:CreateDropdown({
+    Name = "Target Choice",
+    Options = PlayersTable,
+    CurrentOption = {"Option 1"},
+    MultipleOptions = false,
+    Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Option)
+        getgenv().Username = Option[1]
+    end,
+})
+local Button = TargetTab:CreateButton({
+    Name = "Teleport",
+    Callback = function()
+        Get_PlayerTargettedTP()
+    end,
+ })
+local Toggle = TargetTab:CreateToggle({
+    Name = "View",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        local Camera = game:GetService("Workspace").Camera
+            getgenv().View = Value
+                while true do 
+                if getgenv().View == false then
+                Camera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid return end 
+                Camera.CameraSubject = game.Players[getgenv().Username].Character.Humanoid
+            wait()       
+        end   
+    end,
+})
+local Toggle = TargetTab:CreateToggle({
+    Name = "Target Kill",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Bool)
+        getgenv().TargetKill = Bool
+        while true do 
+            if not getgenv().TargetKill then return end 
+            Get_Stomp()
+			wait()
+			Get_Revolver()
+            wait()
+            Get_PlayerTargettedTP()
+			wait()
+			game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
+        end
+    end,
+})
+local PremuimSection = TargetTab:CreateSection("PremuimSection")
+local Button = TargetTab:CreateButton({
+    Name = "Kick User",
+    Callback = function()
+        local args = {
+            [1] = ".kick "..getgenv().Username.."",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
+ local Button = TargetTab:CreateButton({
+    Name = "Bring User",
+    Callback = function()
+        local args = {
+            [1] = ".Bring "..getgenv().Username.."",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
+ local Button = TargetTab:CreateButton({
+    Name = "Freeze User",
+    Callback = function()
+        local args = {
+            [1] = ".Freeze "..getgenv().Username.."",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
+ local Button = TargetTab:CreateButton({
+    Name = "UnFreeze User",
+    Callback = function()
+        local args = {
+            [1] = ".Unfreeze "..getgenv().Username.."",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
+ local Button = TargetTab:CreateButton({
+    Name = "Check User If Premuim",
+    Callback = function()
+        local args = {
+            [1] = ".CheckUser",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
+ local Button = TargetTab:CreateButton({
+    Name = "Reset User",
+    Callback = function()
+        local args = {
+            [1] = ".Reset "..getgenv().Username.."",
+            [2] = "All"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))        
+    end,
+ })
