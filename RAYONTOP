@@ -78,7 +78,7 @@ end
 --Library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-    Name = "Novia Hub | Da Hood",
+    Name = "RaysExp | V1",
     LoadingTitle = "Made By Karma",
     LoadingSubtitle = "by Kai",
     ConfigurationSaving = {
